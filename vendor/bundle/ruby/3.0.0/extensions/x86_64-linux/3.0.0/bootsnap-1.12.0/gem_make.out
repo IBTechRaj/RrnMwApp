@@ -1,0 +1,15 @@
+current directory: /mnt/d/Rrn.180622/motorwashapp/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.12.0/ext/bootsnap
+/usr/share/rvm/rubies/ruby-3.0.0/bin/ruby -I /usr/share/rvm/rubies/ruby-3.0.0/lib/ruby/site_ruby/3.0.0 -r ./siteconf20220618-7518-8fsi58.rb extconf.rb
+creating Makefile
+
+current directory: /mnt/d/Rrn.180622/motorwashapp/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.12.0/ext/bootsnap
+make DESTDIR\= clean
+
+current directory: /mnt/d/Rrn.180622/motorwashapp/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.12.0/ext/bootsnap
+make DESTDIR\=
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.so
+
+current directory: /mnt/d/Rrn.180622/motorwashapp/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.12.0/ext/bootsnap
+make DESTDIR\= install
+/usr/bin/install -m 0755 bootsnap.so ./.gem.20220618-7518-jgakbh/bootsnap
