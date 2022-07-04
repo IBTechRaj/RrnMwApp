@@ -108,7 +108,7 @@ const LoginScreen = ({ navigation }) => {
                 setClientId(data.data.id)
                 console.log('data', data.data);
                 // setClientId(res.id)
-                navigation.navigate('DrawerNavigationRoutes', { clId: data.data.id });
+               
                 if (data.data.usertype === 'client') {
                     setClient(true)
                     setClientName(data.data.first_name)
@@ -119,6 +119,11 @@ const LoginScreen = ({ navigation }) => {
                 } else if (data.data.usertype === 'admin') {
                     setAdmin(true)
                 }
+                navigation.navigate('DrawerNavigationRoutes', {
+                    clId: data.data.id,
+                    email: data.data.email,
+                    firstName: data.data.first_name,
+                });
             })
             .catch((error) => {
                 //Hide Loader
