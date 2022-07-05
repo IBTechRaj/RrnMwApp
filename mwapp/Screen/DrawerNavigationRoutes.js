@@ -28,7 +28,7 @@ const HomeScreenStack = ({ route, navigation }) => {
 
             <Stack.Screen
                 name="HomeScreen"
-                // initialParams={{ params: route.params }}
+                initialParams={{ params: route.params }}
                 component={HomeScreen}
                 options={{
                     title: 'Home', //Set Header Title
@@ -121,16 +121,16 @@ const DrawerNavigatorRoutes = ({ route, navigation }) => {
                 labelStyle: {
                     color: '#d8d8d8',
                 },
-                headerShown: false,
+                headerShown: false
             }}
             // screenOptions={{ headerShown: false }}
-            initialRouteName="BookingScreenStack"
-        // drawerContent={(props) => <CustomSidebarMenu {...props} />}
+            // initialRouteName="BookingScreenStack"
+        drawerContent={(props) => <CustomSidebarMenu {...props} />}
         >
             {/* drawerContent= {CustomSidebarMenu}> */}
             <Drawer.Screen
                 name="HomeScreenStack"
-                // initialParams={{ params: route.params }}
+                initialParams={{ params: route.params }}
                 options={{ drawerLabel: 'Home Screen' }}
                 component={HomeScreenStack}
             />
