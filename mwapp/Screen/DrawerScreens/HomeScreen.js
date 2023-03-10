@@ -289,12 +289,12 @@ const HomeScreen = (props, navigation) => {
                 <Text style={styles.successTextStyle}>
                     Booking Successful
                 </Text>
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     style={styles.buttonStyle}
                     activeOpacity={0.5}
-                    onPress={() => navigation.navigate('HomeScreen')}>
+                    onPress={() => { props.navigation.navigate('HomeScreen') }}>
                     <Text style={styles.buttonTextStyle}>Home</Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
             </View>
         );
 

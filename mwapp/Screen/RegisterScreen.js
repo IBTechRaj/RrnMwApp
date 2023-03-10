@@ -23,14 +23,14 @@ import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-export const signupUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/signup'
-    :
-    'http://localhost:3001/signup';
-export const emailUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/contacts'
-    :
-    'http://localhost:3001/contacts';
+// export const signupUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/signup'
+//     :
+//     'http://localhost:3001/signup';
+// export const emailUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/contacts'
+//     :
+//     'http://localhost:3001/contacts';
 
 import Loader from './Components/Loader';
 
@@ -91,6 +91,7 @@ const RegisterScreen = (props) => {
     const mobileRef = createRef();
     const pincodeRef = createRef();
 
+    const signupUrl = `https://motorwash-backend-lfxt.onrender.com/signup`
     const handleSubmitButton = () => {
         setErrortext('');
         if (!userEmail) {
