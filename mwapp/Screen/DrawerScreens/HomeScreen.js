@@ -1,6 +1,7 @@
 import React, { useState, createRef } from "react";
 // import { StyleSheet, Modal,Text, View, Pressable, TouchableOpacity } from "react-native";
 import { color } from "react-native-reanimated";
+import { SliderBox } from "react-native-image-slider-box";
 import {
     StyleSheet,
     Modal,
@@ -25,24 +26,35 @@ import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-export const bkgUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/bookings'
-    :
-    'http://localhost:3001/bookings';
+// import React, { Component } from 'react';
+// import { StyleSheet, View, Text, ScrollView } from 'react-native';
+// import NumberCarousel from './src/NumberCarousel';
+import ImageCarousel from './ImageCarousel';
 
-export const emailUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/contacts'
-    :
-    'http://localhost:3001/contacts';
+// export const bkgUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/bookings'
+//     :
+//     'http://localhost:3001/bookings';
+
+// export const emailUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/contacts'
+//     :
+//     'http://localhost:3001/contacts';
 
 
 import Loader from '../Components/Loader';
 
 const HomeScreen = (props, navigation) => {
 
-
+    // const sliderPics = [
+    //     require('../../Image/aboutreact.png'),
+    //     require('../../Image/menuIcon.png'),
+    //     require('../../Image/success.png')
+    // ]
+    const bkgUrl = `https://motorwash-backend-lfxt.onrender.com/bookings`
+    const emailUrl = `https://motorwash-backend-lfxt.onrender.com/contacts`
     const { clId, email, firstName } = props.route.params
-    console.log('Bkg params', props.route.params.params.params)
+    // console.log('Bkg params', props.route.params.params.params)
     const services = ['Car Wash', 'Car Painting', 'Car Polishing', 'Car Repair', 'Music System', 'Scratch Removal', 'Car Checkup', 'Car Interior', 'Denting', 'Tyre Change', 'Car Exterior', 'Car Salon']
     const [areas, setAreas] = useState([500001, 500002, 500003])
     const [showTime, setShowTime] = useState(false)
@@ -77,8 +89,8 @@ const HomeScreen = (props, navigation) => {
     const onBkgDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || bkgDate;
         setBkgDate(currentDate)
-        console.log('d', selectedDate)
-        console.log('b', bkgDate)
+        // console.log('d', selectedDate)
+        // console.log('b', bkgDate)
         getCurrentAppts()
         setIsSlotsShow(true)
         setIsPickerShow(false)
@@ -107,14 +119,14 @@ const HomeScreen = (props, navigation) => {
         let h = H % 12 || 12
         let ampm = (H < 12 || H === 24) ? " AM" : " PM"
         tm = h + tm.substr(2, 3) + ampm
-        console.log(tm)
+        // console.log(tm)
         blocks.push(tm)
     })
-    const apptUrl = Platform.OS === 'android' ?
-        `http://10.0.2.2:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
-        :
-        `http://localhost:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
-
+    // const apptUrl = Platform.OS === 'android' ?
+    //     `http://10.0.2.2:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
+    //     :
+    //     `http://localhost:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
+    const apptUrl = `https://motorwash-backend-lfxt.onrender.com/bookings/${bkgDate.toUTCString()}/${pincode}`
     const getCurrentAppts = async () => {
         try {
             const res = await fetch(apptUrl, {
@@ -202,6 +214,7 @@ const HomeScreen = (props, navigation) => {
             },
         })
             .then(response => {
+                console.log('resp stat bkg', response.status)
                 if (response.status === 201) {
                     alert('Your booking successful')
                     setIsBookingSuccess(true);
@@ -209,7 +222,7 @@ const HomeScreen = (props, navigation) => {
             })
             .then(() => {
                 const jwt = AsyncStorage.getItem('token')
-               
+
                 try {
                     fetch(emailUrl, {
                         method: 'POST',
@@ -245,11 +258,11 @@ const HomeScreen = (props, navigation) => {
             })
             .then(() => {
                 setBkgDate(new Date(Date.now()))
-                 setBkgTime('07:00 AM')
-                 setService('Choose Service')
-                 setAddress1('')
-                 setAddress2('')
-                 setPincode('Choose Pincode')
+                setBkgTime('07:00 AM')
+                setService('Choose Service')
+                setAddress1('')
+                setAddress2('')
+                setPincode('Choose Pincode')
             })
             .catch((error) => {
                 setLoading(false);
@@ -257,35 +270,35 @@ const HomeScreen = (props, navigation) => {
             });
 
     };
-    // if (isBookingSuccess) {
-    //     return (
-    //         <View
-    //             style={{
-    //                 flex: 1,
-    //                 backgroundColor: '#307ecc',
-    //                 justifyContent: 'center',
-    //             }}>
-    //             <Image
-    //                 source={require('../../Image/success.png')}
-    //                 style={{
-    //                     height: 150,
-    //                     resizeMode: 'contain',
-    //                     alignSelf: 'center'
-    //                 }}
-    //             />
-    //             <Text style={styles.successTextStyle}>
-    //                 Booking Successful
-    //             </Text>
-    //             {/* <TouchableOpacity
-    //                 style={styles.buttonStyle}
-    //                 activeOpacity={0.5}
-    //                 onPress={() => navigation.navigate('HomeScreen')}>
-    //                 <Text style={styles.buttonTextStyle}>Home</Text>
-    //             </TouchableOpacity> */}
-    //         </View>
-    //     );
+    if (isBookingSuccess) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#307ecc',
+                    justifyContent: 'center',
+                }}>
+                <Image
+                    source={require('../../Image/success.png')}
+                    style={{
+                        height: 150,
+                        resizeMode: 'contain',
+                        alignSelf: 'center'
+                    }}
+                />
+                <Text style={styles.successTextStyle}>
+                    Booking Successful
+                </Text>
+                {/* <TouchableOpacity
+                    style={styles.buttonStyle}
+                    activeOpacity={0.5}
+                    onPress={() => navigation.navigate('HomeScreen')}>
+                    <Text style={styles.buttonTextStyle}>Home</Text>
+                </TouchableOpacity> */}
+            </View>
+        );
 
-    // }
+    }
 
     return (
         <View style={[styles.container, {
@@ -303,7 +316,14 @@ const HomeScreen = (props, navigation) => {
                     MyMotorWash
                 </Text>
             </View>
-            <View style={{ flex: 9, backgroundColor: "skyblue", justifyContent: 'center' }} >
+
+            <View style={{ flex: 9, backgroundColor: "#040342", justifyContent: 'center' }} >
+                {/* <View style={styles.imgContainer}>
+                    <ScrollView style={{ flex: 1 }}>
+                        <Text style={styles.imgTitle}>Example 3</Text>
+                        <ImageCarousel />
+                    </ScrollView>
+                </View> */}
                 <Text
                     style={{
                         fontSize: 18,
@@ -315,8 +335,8 @@ const HomeScreen = (props, navigation) => {
                     {'\n'}
                     Choose from wide list of our services
                 </Text>
-              
-                
+
+
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -326,8 +346,8 @@ const HomeScreen = (props, navigation) => {
                         setModalVisible(!modalVisible);
                     }}
                 >
-                    {/*BEGIN  code from other screenOptions */}
-                    <View style={{ flex: 1, backgroundColor: '#307ecc' }}>
+                    {/*BEGIN  code from other screenOptions bgc: 307ecc*/}
+                    <View style={{ flex: 1, backgroundColor: '#040342' }}>
                         <Loader loading={loading} />
                         <ScrollView
                             keyboardShouldPersistTaps="handled"
@@ -335,7 +355,7 @@ const HomeScreen = (props, navigation) => {
                                 justifyContent: 'center',
                                 alignContent: 'center',
                             }}>
-                            <View style={{ alignItems: 'center' }}>
+                            {/* <View style={{ alignItems: 'center' }}>
                                 <Image
                                     source={require('../../Image/aboutreact.png')}
                                     style={{
@@ -345,7 +365,17 @@ const HomeScreen = (props, navigation) => {
                                         margin: 5,
                                     }}
                                 />
-                            </View>
+                            </View> */}
+                            <Text
+                                style={{
+                                    fontSize: 30,
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    color: '#FB6A33',
+                                    paddingTop: 5,
+                                }} >
+                                MyMotorWash
+                            </Text>
                             <View style={styles.SectionStyle}>
                                 <TextInput
                                     style={styles.inputStyle}
@@ -354,7 +384,7 @@ const HomeScreen = (props, navigation) => {
                                     }
                                     underlineColorAndroid="#f000"
                                     placeholder="Enter Address1"
-                                    placeholderTextColor={styles.dropStyle} //"#8b9cb5"
+                                    placeholderTextColor="#8b9cb5" //"#8b9cb5"
                                     autoCapitalize="sentences"
                                     ref={address1InputRef}
                                     returnKeyType="next"
@@ -384,16 +414,21 @@ const HomeScreen = (props, navigation) => {
                                 {/* <View style={styles.inputStyle}>
                                     <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Pincode</Text>
                                 </View> */}
-                                <View
-                                >
+                                <View style={styles.inputStyle}>
                                     <SelectDropdown
-                                        defaultButtonText='Pincode'
-                                        buttonTextStyle={styles.whiteText}
-                                        buttonStyle={styles.dropStyle}
-                                        rowStyle={styles.dropStyle}
-                                        rowTextStyle={styles.whiteText}
-                                        selectedRowStyle={styles.dropStyle}
-                                        selectedRowTextStyle={styles.whiteText}
+                                        // defaultButtonText='Pincode'
+                                        // buttonTextStyle={styles.whiteText}
+                                        // buttonStyle={styles.dropStyle}
+                                        // rowStyle={styles.dropStyle}
+                                        // rowTextStyle={styles.whiteText}
+                                        // selectedRowStyle={styles.dropStyle}
+                                        // selectedRowTextStyle={styles.whiteText}
+                                        defaultButtonText={'Pincode'}
+                                        buttonStyle={styles.dropdown1BtnStyle}
+                                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                        dropdownStyle={styles.dropdown1DropdownStyle}
+                                        rowStyle={styles.dropdown1RowStyle}
+                                        rowTextStyle={styles.dropdown1RowTxtStyle}
                                         data={areas}
                                         onSelect={(selectedItem, index) => {
                                             setPincode(selectedItem)
@@ -407,9 +442,11 @@ const HomeScreen = (props, navigation) => {
                                     {/* <View style={styles.inputStyle}>
                                         <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Booking Date</Text>
                                     </View> */}
-                                    <TouchableOpacity onPress={() => showPicker()} >
-                                        <Text style={styles.inputStyle}>Booking Date: {bkgDate.toLocaleDateString()}</Text>
-                                    </TouchableOpacity>
+                                    <View style={styles.inputStyle}>
+                                        <TouchableOpacity onPress={() => showPicker()} >
+                                            <Text style={[{ color: "#8b9cb5", position: 'relative', fontSize: 20 }]}>Booking Date: {bkgDate.toLocaleDateString()}</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                     {isPickerShow && (
                                         <DateTimePicker
                                             value={bkgDate}
@@ -420,9 +457,9 @@ const HomeScreen = (props, navigation) => {
                                     )}
                                 </View>
                                 <View style={styles.SectionStyle} >
-                                    <View>
+                                    <View style={styles.inputStyle}>
                                         {/* <Text style={styles.inputStyle}>{tmslot}</Text> */}
-                                        <Text style={[{ color: "#8b9cb5", position: 'relative' }, styles.inputStyle]} >Time Slot: {bkgTime}</Text>
+                                        <Text style={[{ color: "#8b9cb5", position: 'relative', fontSize: 20 }]} >Time Slot: {bkgTime}</Text>
                                     </View>
                                     {isSlotsShow && (
 
@@ -439,7 +476,7 @@ const HomeScreen = (props, navigation) => {
                                                                     if (!reserved.includes(tmslot)) {
 
                                                                         setBkgTime(tmslot)
-                                                                        console.log('tmslot', tmslot)
+                                                                        // console.log('tmslot', tmslot)
                                                                         setIsSlotsShow(false)
                                                                     } else
                                                                         alert('Already reserved')
@@ -463,21 +500,26 @@ const HomeScreen = (props, navigation) => {
                                         <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Service</Text>
                                     </View> */}
                                     <View
-                                        // style={styles.listStyle}
-                                        // style={styles.inputStyle}
+                                        style={styles.inputStyle}
                                     >
                                         <SelectDropdown
                                             data={services}
-                                            defaultButtonText='Select Service'
-                                            buttonTextStyle={styles.whiteText}
-                                            buttonStyle={styles.dropStyle}
-                                            rowStyle={styles.dropStyle}
-                                            rowTextStyle={styles.whiteText}
-                                            selectedRowStyle={styles.dropStyle}
-                                            selectedRowTextStyle={styles.whiteText}
+                                            defaultButtonText={'Select Service'}
+                                            buttonStyle={styles.dropdown1BtnStyle}
+                                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                            dropdownStyle={styles.dropdown1DropdownStyle}
+                                            rowStyle={styles.dropdown1RowStyle}
+                                            rowTextStyle={styles.dropdown1RowTxtStyle}
+                                            // defaultButtonText='Select Service'
+                                            // buttonTextStyle={styles.whiteText}
+                                            // buttonStyle={styles.dropStyle}
+                                            // rowStyle={styles.dropStyle}
+                                            // rowTextStyle={styles.whiteText}
+                                            // selectedRowStyle={styles.dropStyle}
+                                            // selectedRowTextStyle={styles.whiteText}
                                             onSelect={(selectedItem, index) => {
                                                 setService(selectedItem)
-                                                console.log(selectedItem, index)
+                                                // console.log(selectedItem, index)
                                             }}
                                         />
                                     </View>
@@ -493,9 +535,9 @@ const HomeScreen = (props, navigation) => {
                                     style={styles.cancelButtonStyle}
                                     activeOpacity={0.5}
                                     onPress={() => {
-                        // alert("Modal has been closed.");
-                        setModalVisible(!modalVisible);
-                    }}>
+                                        // alert("Modal has been closed.");
+                                        setModalVisible(!modalVisible);
+                                    }}>
                                     <Text style={styles.buttonTextStyle}>Cancel</Text>
                                 </TouchableOpacity>
                             </KeyboardAvoidingView>
@@ -529,7 +571,7 @@ const HomeScreen = (props, navigation) => {
             </View>
 
 
-            <View style={{ flex: 1, backgroundColor: "#FB6A33" }} />
+            <View style={{ flex: 1, backgroundColor: "#307ecc" }} />
         </View >
     );
 };
@@ -547,7 +589,7 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     buttonStyle: {
-        backgroundColor: '#7DE24E',
+        backgroundColor: '#3369de',
         borderWidth: 0,
         color: '#FFFFFF',
         borderColor: '#7DE24E',
@@ -580,7 +622,8 @@ const styles = StyleSheet.create({
     inputStyle: {
         flex: 1,
         color: 'white',
-        fontSize: 20,
+        fontSize: 18,
+        // fontSize: 20,
         paddingLeft: 15,
         paddingRight: 30,
         borderWidth: 1,
@@ -600,12 +643,12 @@ const styles = StyleSheet.create({
     errorTextStyle: {
         color: 'red',
         textAlign: 'center',
-        fontSize: 14,
+        fontSize: 16,
     },
     successTextStyle: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 18,
+        fontSize: 20,
         padding: 30,
     },
     datePickerStyle: {
@@ -629,7 +672,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     buttonLabel: {
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: "500",
         color: "coral",
     },
@@ -675,12 +718,12 @@ const styles = StyleSheet.create({
     },
     dimText: {
         color: '#d9dedb',
-        fontSize: 16,
+        fontSize: 20,
     },
 
 
     container: {
-        flex: 1,
+        flex: 2,
     },
     button: {
         paddingHorizontal: 8,
@@ -702,4 +745,30 @@ const styles = StyleSheet.create({
         backgroundColor: "coral",
         borderWidth: 0,
     },
+    imgContainer: {
+        flex: 1,
+        backgroundColor: '#2C2F34',
+        paddingVertical: 30,
+        // height: 200,
+    },
+    imgTitle: {
+        color: 'white',
+        fontSize: 24,
+        marginTop: 40,
+        marginBottom: 5,
+    },
+    dropdown1BtnStyle: {
+        width: '100%',
+        height: 30,
+        backgroundColor: '#040342',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+        paddingBottom: 8,
+        fontSize: 18,
+    },
+    dropdown1BtnTxtStyle: { color: '#8b9cb5', textAlign: 'left', fontSize: 18 },
+    dropdown1DropdownStyle: { backgroundColor: '#040342' },
+    dropdown1RowStyle: { backgroundColor: '#040342' },
+    dropdown1RowTxtStyle: { color: '#FFFFFF', textAlign: 'left', fontSize: 18 },
 })

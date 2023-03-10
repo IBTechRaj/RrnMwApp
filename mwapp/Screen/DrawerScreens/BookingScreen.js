@@ -1,7 +1,7 @@
 
 import React, { useState, createRef } from 'react';
 import {
-    StyleSheet,    
+    StyleSheet,
     SafeAreaView,
     TextInput,
     View,
@@ -15,32 +15,35 @@ import {
 } from "react-native";
 
 import { isBefore, setHours, setMinutes, addMinutes } from 'date-fns'
-import {  useEffect } from 'react'
-import { Content, Card,  Number, Item, Paragraph } from 'react-native-paper';
+import { useEffect } from 'react'
+import { Content, Card, Number, Item, Paragraph } from 'react-native-paper';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-export const bkgUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/bookings'
-    :
-    'http://localhost:3001/bookings';
+// export const bkgUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/bookings'
+//     :
+//     'http://localhost:3001/bookings';
 
-export const emailUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/contacts'
-    :
-    'http://localhost:3001/contacts';
+// export const emailUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/contacts'
+//     :
+//     'http://localhost:3001/contacts';
 
 
 import Loader from '../Components/Loader';
 
 const BookingScreen = (props, navigation) => {
 
-    
+    const bkgUrl = `https://motorwash-backend-lfxt.onrender.com/bookings`
+    const emailUrl = `https://motorwash-backend-lfxt.onrender.com/contacts`
+    // const areasUrl = `https://motorwash-backend-lfxt.onrender.com/login`
+
     const { clId, email, firstName } = props.route.params
-    console.log('Bkg params', props.route.params.params.params)
+    // console.log('Bkg params', props.route.params.params.params)
     const services = ['Car Wash', 'Car Painting', 'Car Polishing', 'Car Repair', 'Music System', 'Scratch Removal', 'Car Checkup', 'Car Interior', 'Denting', 'Tyre Change', 'Car Exterior', 'Car Salon']
     const [areas, setAreas] = useState([500001, 500002, 500003])
     const [showTime, setShowTime] = useState(false)
@@ -52,7 +55,7 @@ const BookingScreen = (props, navigation) => {
     const [pincode, setPincode] = useState('Choose Pincode')
     const [isBookingSuccess, setIsBookingSuccess] = useState(false);
 
-    
+
     const handleServiceChange = (e) => {
         setService(e.target.value)
     }
@@ -73,8 +76,8 @@ const BookingScreen = (props, navigation) => {
     const onBkgDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || bkgDate;
         setBkgDate(currentDate)
-         console.log('d', selectedDate)
-        console.log('b', bkgDate)
+        // console.log('d', selectedDate)
+        // console.log('b', bkgDate)
         getCurrentAppts()
         setIsSlotsShow(true)
         setIsPickerShow(false)
@@ -97,56 +100,57 @@ const BookingScreen = (props, navigation) => {
     while (isBefore(cursor, to)) {
         rawblocks.push(cursor.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }).slice(-9, -3))
         cursor = step(cursor)
-        }
+    }
     const ampm = rawblocks.map((tm) => {
         let H = tm.substr(0, 2)
         let h = H % 12 || 12
         let ampm = (H < 12 || H === 24) ? " AM" : " PM"
-        tm = h + tm.substr(2, 3) + ampm    
-        console.log(tm)
+        tm = h + tm.substr(2, 3) + ampm
+        // console.log(tm)
         blocks.push(tm)
     })
-     const apptUrl = Platform.OS === 'android' ?
-        `http://10.0.2.2:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
-        :
-        `http://localhost:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
+    // const apptUrl = Platform.OS === 'android' ?
+    //     `http://10.0.2.2:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
+    //     :
+    //     `http://localhost:3001/bookings/${bkgDate.toUTCString()}/${pincode}`
+    const apptUrl = `https://motorwash-backend-lfxt.onrender.com/bookings/${bkgDate.toUTCString()}/${pincode}`
 
-        const getCurrentAppts = async () => {
-            try {
-                const res = await fetch(apptUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-                )
-                    .then((res) => {
-                        console.log('res', res)
-                        if (res.ok) {
-                        return res.json();
-                        }
-                    })
-                    .then((data) => {
-                        console.log('working 2', data)
-                        setReserved(data)
-                        console.log('reserved', reserved)
-                    })
-
-            } catch (err) {
-                setReserved(null);
+    const getCurrentAppts = async () => {
+        try {
+            const res = await fetch(apptUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }
+            )
+                .then((res) => {
+                    console.log('res appt', res)
+                    if (res.ok) {
+                        return res.json();
+                    }
+                })
+                .then((data) => {
+                    console.log('appt data', data)
+                    setReserved(data)
+                    console.log('reserved', reserved)
+                })
+
+        } catch (err) {
+            setReserved(null);
         }
-    
+    }
+
     const handleSubmitButton = () => {
         setErrortext('');
         if (!bkgDate) {
             alert('Please fill Booking Date');
             return;
         }
-                                if (!bkgTime) {
-                                    alert('Please fill Booking Time');
-                                    return;
-                                }
+        if (!bkgTime) {
+            alert('Please fill Booking Time');
+            return;
+        }
         if (!service) {
             alert('Please fill Service');
             return;
@@ -175,13 +179,14 @@ const BookingScreen = (props, navigation) => {
             user_id: props.route.params.params.params.clId,
             area_id: 1,
         }
-        console.log('bkgDet', booking)
-        
+        // console.log('bkgDet', booking)
+
         const jwt = AsyncStorage.getItem('token')
+        console.log('bkgurrr', bkgUrl)
         fetch(bkgUrl, {
             method: 'POST',
             body: JSON.stringify({
-                booking : {
+                booking: {
                     bkg_date: bkgDate,
                     bkg_time: bkgTime,
                     service: service,
@@ -197,16 +202,17 @@ const BookingScreen = (props, navigation) => {
                 Authorization: `Bearer ${jwt}`
             },
         })
-          .then(response => {
-            if (response.status === 201) {
-                alert('Your booking successful')
-                setIsBookingSuccess(true);
-            }
-          })
+            .then(response => {
+                console.log('resp stat bkg', response.status)
+                if (response.status === 201) {
+                    alert('Your booking successful')
+                    setIsBookingSuccess(true);
+                }
+            })
             .then(() => {
                 const jwt = AsyncStorage.getItem('token')
                 const emailClientData = {
-                                    }
+                }
                 try {
                     fetch(emailUrl, {
                         method: 'POST',
@@ -244,7 +250,7 @@ const BookingScreen = (props, navigation) => {
                 setLoading(false);
                 console.error(error);
             });
-        
+
     };
     if (isBookingSuccess) {
         return (
@@ -308,7 +314,7 @@ const BookingScreen = (props, navigation) => {
                             setAddress2(address2)
                         }
                         underlineColorAndroid="#f000"
-                        placeholder="Enter Address2"
+                        placeholder="Enter Address 2"
                         placeholderTextColor="#8b9cb5"
                         autoCapitalize="sentences"
                         ref={address2InputRef}
@@ -320,7 +326,7 @@ const BookingScreen = (props, navigation) => {
 
                 <View style={styles.SectionStyle}>
                     <View style={styles.inputStyle}>
-                        <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Pincode</Text>
+                        <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >PinNcode</Text>
                     </View>
                     <View style={styles.listStyle}>
                         <SelectDropdown
@@ -328,16 +334,16 @@ const BookingScreen = (props, navigation) => {
                             data={areas}
                             onSelect={(selectedItem, index) => {
                                 setPincode(selectedItem)
-                                console.log(selectedItem, index)
+                                // console.log(selectedItem, index)
                             }}
                         />
                     </View>
                 </View>
                 <KeyboardAvoidingView enabled>
                     <View style={styles.SectionStyle}>
-                            <View style={styles.inputStyle}>
-                                <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Booking Date</Text>
-                            </View>               
+                        <View style={styles.inputStyle}>
+                            <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Booking Date</Text>
+                        </View>
                         <TouchableOpacity style={styles.inputStyle} onPress={() => showPicker()} >
                             <Text>Enter Date</Text>
                         </TouchableOpacity>
@@ -352,7 +358,7 @@ const BookingScreen = (props, navigation) => {
                     </View>
                     <View style={styles.SectionStyle} >
                         <View style={styles.inputStyle}>
-                        <Text style={{ color: "#8b9cb5",  position: 'relative' }} >Time Slots</Text>
+                            <Text style={{ color: "#8b9cb5", position: 'relative' }} >Time Slots</Text>
                         </View>
                         {isSlotsShow && (
 
@@ -367,14 +373,14 @@ const BookingScreen = (props, navigation) => {
                                                     key={index}
                                                     onPress={() => {
                                                         if (!reserved.includes(tmslot)) {
-                                                            
+
                                                             setBkgTime(tmslot)
-                                                            console.log('tmslot', tmslot)
+                                                            // console.log('tmslot', tmslot)
                                                             setIsSlotsShow(false)
                                                         } else
                                                             alert('Already reserved')
-                                                    
-                                                    
+
+
                                                     }}>
 
                                                     <Text style={{ color: 'blue', margin: 5, borderColor: 'green', backgroundColor: (reserved.includes(tmslot) ? '#42e3f5' : 'white'), marginLeft: 0 }}>{tmslot}</Text>
@@ -384,7 +390,7 @@ const BookingScreen = (props, navigation) => {
                                         </Card.Content>
                                     </Card>
                                 </View>
-                             </SafeAreaView>
+                            </SafeAreaView>
                         )}
                     </View>
                     <View style={styles.SectionStyle}>
@@ -397,7 +403,7 @@ const BookingScreen = (props, navigation) => {
                                 data={services}
                                 onSelect={(selectedItem, index) => {
                                     setService(selectedItem)
-                                    console.log(selectedItem, index)
+                                    // console.log(selectedItem, index)
                                 }}
                             />
                         </View>
@@ -508,7 +514,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
-      paddingRight: 15,
+        paddingRight: 15,
         height: 550,
         width: 150,
     },
