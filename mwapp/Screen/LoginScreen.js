@@ -89,6 +89,7 @@ const LoginScreen = ({ navigation }) => {
             //     }
             // })
             .then((res) => {
+                console.log(res)
                 if (res.ok) {
                     // console.log('res', res)
                     // console.log(res.headers.get("Authorization"));

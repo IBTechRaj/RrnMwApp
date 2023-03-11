@@ -92,6 +92,7 @@ const RegisterScreen = (props) => {
     const pincodeRef = createRef();
 
     const signupUrl = `https://motorwash-backend-lfxt.onrender.com/signup`
+    const emailUrl = `https://motorwash-backend-lfxt.onrender.com/contacts`
     const handleSubmitButton = () => {
         setErrortext('');
         if (!userEmail) {
