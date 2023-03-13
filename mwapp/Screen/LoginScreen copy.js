@@ -16,10 +16,10 @@ import {
 } from 'react-native';
 import { Platform } from 'react-native';
 
-// export const baseUrl = Platform.OS === 'android' ?
-//     'http://10.0.2.2:3001/login'
-//     :
-//     'http://localhost:3001/login';
+export const baseUrl = Platform.OS === 'android' ?
+    'http://10.0.2.2:3001/login'
+    :
+    'http://localhost:3001/login';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -34,6 +34,7 @@ const LoginScreen = ({ navigation }) => {
     const [client, setClient] = useState()
     const [clientName, setClientName] = useState()
     const [clientEmail, setClientEmail] = useState()
+    const [sprovider, setSprovider] = useState()
 
     const passwordInputRef = createRef();
 
@@ -56,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
             formBody.push(encodedKey + '=' + encodedValue);
         }
         formBody = formBody.join('&');
-        const baseUrl = `https://motorwash-backend-lfxt.onrender.com/login`
+
         fetch(baseUrl, {
             // fetch('http://localhost:3000/api/user/login', {
             method: 'POST',
@@ -89,10 +90,9 @@ const LoginScreen = ({ navigation }) => {
             //     }
             // })
             .then((res) => {
-                console.log(res)
                 if (res.ok) {
-                    // console.log('res', res)
-                    // console.log(res.headers.get("Authorization"));
+                    console.log('res', res)
+                    console.log(res.headers.get("Authorization"));
                     AsyncStorage.setItem("token", res.headers.get("Authorization"));
                     // setClientId(res.id)
                     // navigation.navigate('DrawerNavigationRoutes', { 'clientId': res.id });
@@ -101,7 +101,6 @@ const LoginScreen = ({ navigation }) => {
                     return res.json();
                 } else {
                     console.log('Error login')
-                    alert('Login failed')
                     //   onCloseSignupModal()
                     throw new Error(res);
                 }
@@ -146,21 +145,9 @@ const LoginScreen = ({ navigation }) => {
                 }}>
                 <View>
                     <KeyboardAvoidingView enabled>
-                        {/* <View style={{ flex: 1, backgroundColor: "black" }} > */}
-                        <Text
-                            style={{
-                                fontSize: 30,
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                                color: '#FB6A33',
-                                paddingTop: 5,
-                            }} >
-                            MyMotorWash
-                        </Text>
-                        {/* </View> */}
                         <View style={{ alignItems: 'center' }}>
                             <Image
-                                source={require('../Image/bg2.jpg')}
+                                source={require('../Image/aboutreact.png')}
                                 style={{
                                     width: '50%',
                                     height: 100,
@@ -169,7 +156,6 @@ const LoginScreen = ({ navigation }) => {
                                 }}
                             />
                         </View>
-
                         <View style={styles.SectionStyle}>
                             <TextInput
                                 style={styles.inputStyle}
@@ -234,8 +220,7 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        // backgroundColor: '#307ecc',
-        backgroundColor: '#040342',
+        backgroundColor: '#307ecc',
         alignContent: 'center',
     },
     SectionStyle: {
@@ -247,8 +232,7 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     buttonStyle: {
-        // backgroundColor: '#7DE24E',
-        backgroundColor: '#3369de',
+        backgroundColor: '#7DE24E',
         borderWidth: 0,
         color: '#FFFFFF',
         borderColor: '#7DE24E',
@@ -275,14 +259,6 @@ const styles = StyleSheet.create({
         borderColor: '#dadae8',
     },
     registerTextStyle: {
-        color: '#FFFFFF',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        fontSize: 14,
-        alignSelf: 'center',
-        padding: 10,
-    },
-    LogoTextStyle: {
         color: '#FFFFFF',
         textAlign: 'center',
         fontWeight: 'bold',

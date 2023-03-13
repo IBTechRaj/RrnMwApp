@@ -1,86 +1,139 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { color } from "react-native-reanimated";
+// Example of Splash, Login and Sign Up in React Native
+// https://aboutreact.com/react-native-login-and-signup/
 
+// Import React and Component
+import React, { useState, useEffect } from 'react';
+import { View, Text, SafeAreaView, StyleSheet, Image } from 'react-native';
+import { DataTable } from 'react-native-paper';
 const HomeScreen = () => {
+    const servicesUrl = `https://motorwash-backend-lfxt.onrender.com/services/`
+    const [serviceData, setServiceData] = useState([]);
+
+    useEffect(() => {
+        const getServices = async () => {
+            try {
+                const res = await fetch(servicesUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+                )
+                    .then((res) => {
+                        console.log('res', res)
+                        if (res.ok) {
+                            return res.json();
+                        }
+                    })
+                    .then((data) => {
+                        console.log('services', data)
+                        setServiceData(data)
+                    })
+            } catch (err) {
+                setServiceData(null);
+                console.log('services error', err)
+            }
+        }
+
+        getServices()
+    }, [])
+
     return (
-        <View style={[styles.container, {
-            // Try setting `flexDirection` to `"row"`.
-            flexDirection: "column"
-        }]}>
-            {/* <View style={{ flex: 1, backgroundColor: "red" }} /> */}
-            <View style={{ flex: 1, backgroundColor: "black" }} >
+
+
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#040342' }}>
+            <View style={{ flex: 1, alignItems: 'center' }}>
                 <Text
                     style={{
                         fontSize: 30,
                         fontWeight: 'bold',
                         textAlign: 'center',
                         color: '#FB6A33',
-                        paddingTop: 5,
-                        // marginBottom: 16,
-                    }}>
+                        // paddingTop: 5,
+                    }} >
                     MyMotorWash
                 </Text>
             </View>
-            <View style={{ flex: 9, backgroundColor: "skyblue", justifyContent: 'center' }} >
-                <Text
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Image
+                    source={require('../../Image/bg2.jpg')}
                     style={{
-                        fontSize: 18,
-                        // fontWeight: 'bold',
-                        textAlign: 'center',
-                        color: 'black',
-                        // paddingTop: 5,
-                        marginBottom: 16,
-                    }}>
-                    Have your car serviced at home.
-                    {'\n'}
-                    Choose from wide list of our services
-                </Text>
-                <TouchableOpacity
-                    // onPress={() => setSelectedValue(value)}
-                    style={[
-                        styles.button, styles.selected,
-                    ]}
-                >
-                    <Text
-                        style={{ color: 'white', textAlign: 'center' }}
-                    >
-                        Book Your Slot now
-                    </Text>
-                </TouchableOpacity>
+                        flex: 1,
+                        width: '100%',
+                        // height: auto,
+                        resizeMode: 'contain',
+                        // margin: 30,
+                    }}
+                />
             </View>
 
+            <View style={{ flex: 5 }}>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.header}>
+                        Our Services
 
-            <View style={{ flex: 1, backgroundColor: "#FB6A33" }} />
-        </View >
+
+                    </Text>
+
+                </View>
+                <View style={{ flex: 4 }}>
+                    <DataTable>
+                        <DataTable.Header>
+                            <DataTable.Title><Text style={styles.header}>Service</Text></DataTable.Title>
+                            <DataTable.Title ><Text style={styles.header}>Price</Text></DataTable.Title>
+                            <DataTable.Title ><Text style={styles.header}>Offer Price</Text></DataTable.Title>
+                        </DataTable.Header>
+                        {serviceData && serviceData.map(({ id, sname, price, offerprice, description }) => (
+                            <DataTable.Row>
+                                <DataTable.Cell><Text style={styles.detail}>{sname}</Text></DataTable.Cell>
+                                <DataTable.Cell ><Text style={styles.detail}>{price}</Text></DataTable.Cell>
+                                <DataTable.Cell ><Text style={styles.detail}>{offerprice}</Text></DataTable.Cell>
+                            </DataTable.Row>
+                        ))}
+                    </DataTable>
+                </View>
+            </View>
+            <View style={{ flex: 1, backgroundColor: "#307ecc", alignItems: 'center', justifyContent: 'center' }} >
+                <Text style={styles.footer}>
+                    My Motor Washg @ 2022
+                    {'\n\n'}
+
+                </Text>
+            </View>
+        </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        // padding: 20,
-    },
-    button: {
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 4,
-        backgroundColor: "oldlace",
-        alignSelf: "center",
-        marginHorizontal: "1%",
-        marginBottom: 6,
-        minWidth: "48%",
-        textAlign: "center",
-    },
-    buttonLabel: {
-        fontSize: 12,
-        fontWeight: "500",
-        color: "coral",
-    },
-    selected: {
-        backgroundColor: "coral",
-        borderWidth: 0,
-    },
-});
-
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+    header: {
+        fontSize: 20,
+        textAlign: 'center',
+        color: 'white',
+    },
+    subheader: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'white',
+        backgroundColor: '#414880',
+        padding: 8,
+        margin: 0
+    },
+    detail: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: 'white',
+        backgroundColor: '#414880',
+        // padding: 8,
+        margin: 0
+    },
+    table: {
+        fontSize: 16,
+        textAlign: 'left',
+        color: 'white',
+        backgroundColor: '#414880',
+        // padding: 8,
+        margin: 0
+    }
+});

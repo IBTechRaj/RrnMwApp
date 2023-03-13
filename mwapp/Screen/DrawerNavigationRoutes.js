@@ -10,7 +10,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // Import Screens
 import HomeScreen from './DrawerScreens/HomeScreen';
-import SettingsScreen from './DrawerScreens/SettingsScreen';
+import ContactScreen from './DrawerScreens/ContactScreen';
 import BookingScreen from './DrawerScreens/BookingScreen';
 import CustomSidebarMenu from './Components/CustomSidebarMenu';
 import NavigationDrawerHeader from './Components/NavigationDrawerHeader';
@@ -28,7 +28,7 @@ const HomeScreenStack = ({ route, navigation }) => {
 
             <Stack.Screen
                 name="HomeScreen"
-                // initialParams={{ params: route.params }}
+                initialParams={{ params: route.params }}
                 component={HomeScreen}
                 options={{
                     title: 'Home', //Set Header Title
@@ -80,10 +80,10 @@ const BookingScreenStack = ({ route, navigation }) => {
     );
 };
 
-const SettingScreenStack = ({ navigation }) => {
+const ContactScreenStack = ({ navigation }) => {
     return (
         <Stack.Navigator
-            initialRouteName="SettingsScreen"
+            initialRouteName="ContactScreen"
             screenOptions={{
                 headerLeft: () => (
                     <NavigationDrawerHeader navigationProps={navigation} />
@@ -97,10 +97,10 @@ const SettingScreenStack = ({ navigation }) => {
                 },
             }}>
             <Stack.Screen
-                name="SettingsScreen"
-                component={SettingsScreen}
+                name="ContactScreen"
+                component={ContactScreen}
                 options={{
-                    title: 'Settings', //Set Header Title
+                    title: 'Contact', //Set Header Title
                 }}
             />
         </Stack.Navigator>
@@ -124,25 +124,25 @@ const DrawerNavigatorRoutes = ({ route, navigation }) => {
                 headerShown: false,
             }}
             // screenOptions={{ headerShown: false }}
-            initialRouteName="BookingScreenStack"
-        // drawerContent={(props) => <CustomSidebarMenu {...props} />}
+            // initialRouteName="BookingScreenStack"
+            drawerContent={(props) => <CustomSidebarMenu {...props} />}
         >
             {/* drawerContent= {CustomSidebarMenu}> */}
             <Drawer.Screen
                 name="HomeScreenStack"
                 // initialParams={{ params: route.params }}
-                options={{ drawerLabel: 'Home Screen' }}
+                options={{ drawerLabel: 'Home ' }}
                 component={HomeScreenStack}
             />
             <Drawer.Screen
-                name="SettingScreenStack"
-                options={{ drawerLabel: 'Setting Screen' }}
-                component={SettingScreenStack}
+                name="ContactScreenStack"
+                options={{ drawerLabel: 'Contact ' }}
+                component={ContactScreenStack}
             />
             <Drawer.Screen
                 name="BookingScreenStack"
                 initialParams={{ params: route.params }}
-                // options={{ drawerLabel: 'Booking Screen' }}
+                options={{ drawerLabel: 'Booking Screen' }}
                 component={BookingScreenStack}
             />
         </Drawer.Navigator>
