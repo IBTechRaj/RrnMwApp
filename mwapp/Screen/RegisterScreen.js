@@ -15,6 +15,7 @@ import {
     ScrollView,
     Button,
 } from 'react-native';
+import { isBefore, setHours, setMinutes, addMinutes, format } from 'date-fns'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown'
 
@@ -22,14 +23,14 @@ import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-export const signupUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/signup'
-    :
-    'http://localhost:3001/signup';
-export const emailUrl = Platform.OS === 'android' ?
-    'http://10.0.2.2:3001/contacts'
-    :
-    'http://localhost:3001/contacts';
+// export const signupUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/signup'
+//     :
+//     'http://localhost:3001/signup';
+// export const emailUrl = Platform.OS === 'android' ?
+//     'http://10.0.2.2:3001/contacts'
+//     :
+//     'http://localhost:3001/contacts';
 
 import Loader from './Components/Loader';
 
@@ -90,6 +91,8 @@ const RegisterScreen = (props) => {
     const mobileRef = createRef();
     const pincodeRef = createRef();
 
+    const signupUrl = `https://motorwash-backend-lfxt.onrender.com/signup`
+    const emailUrl = `https://motorwash-backend-lfxt.onrender.com/contacts`
     const handleSubmitButton = () => {
         setErrortext('');
         if (!userEmail) {
@@ -204,6 +207,7 @@ const RegisterScreen = (props) => {
                     return res.json();
                 } else {
                     console.log('Error signup')
+                    alert('Email already taken ')
                     throw new Error(res);
                 }
             })
@@ -304,7 +308,7 @@ const RegisterScreen = (props) => {
         );
     }
     return (
-        <View style={{ flex: 1, backgroundColor: '#307ecc' }}>
+        <View style={{ flex: 1, backgroundColor: '#040342' }}>
             <Loader loading={loading} />
             <ScrollView
                 keyboardShouldPersistTaps="handled"
@@ -312,9 +316,19 @@ const RegisterScreen = (props) => {
                     justifyContent: 'center',
                     alignContent: 'center',
                 }}>
-                <View style={{ alignItems: 'center' }}>
+                <Text
+                    style={{
+                        fontSize: 30,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        color: '#FB6A33',
+                        paddingTop: 5,
+                    }} >
+                    MyMotorWash
+                </Text>
+                {/* <View style={{ alignItems: 'center' }}>
                     <Image
-                        source={require('../Image/aboutreact.png')}
+                        source={require('../Image/bg2.jpg')}
                         style={{
                             width: '50%',
                             height: 100,
@@ -322,7 +336,7 @@ const RegisterScreen = (props) => {
                             margin: 5,
                         }}
                     />
-                </View>
+                </View> */}
                 <KeyboardAvoidingView enabled>
 
                     <View style={styles.SectionStyle}>
@@ -414,33 +428,43 @@ const RegisterScreen = (props) => {
                         />
                     </View>
                     <View style={styles.SectionStyle}>
-                        <View style={styles.inputStyle}>
+                        {/* <View style={styles.inputStyle}>
                             <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Gender</Text>
-                        </View>
+                        </View> */}
                         <View style={styles.inputStyle}>
                             <SelectDropdown
+                                defaultButtonText={'Gender'}
+                                buttonStyle={styles.dropdown1BtnStyle}
+                                buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                dropdownStyle={styles.dropdown1DropdownStyle}
+                                rowStyle={styles.dropdown1RowStyle}
+                                rowTextStyle={styles.dropdown1RowTxtStyle}
                                 data={genders}
                                 onSelect={(selectedItem, index) => {
                                     setGender(index)
                                     console.log(selectedItem, index)
                                 }}
+                                ref={genderRef}
                             />
                         </View>
                     </View>
                     <View style={styles.SectionStyle}>
 
                         <View style={styles.inputStyle}>
-                            <Text style={{ color: "#8b9cb5", paddingTop: 8 }} >Date of Birth</Text>
+                            <Text style={{ color: "#8b9cb5", paddingTop: 8 }} onPress={() => showPicker()}
+                                placeholder="Date of Birth">Date of Birth</Text>
                         </View>
 
-                        <View style={styles.SectionStyle}>
-                            <Button title="Enter Date of Birth" onPress={() => showPicker()} />
-                        </View>
+                        <TouchableOpacity style={styles.inputStyle}>
+                            <Text style={{ color: "#8b9cb5", paddingTop: 8 }} onPress={() => showPicker()} >{dob.toString()}</Text>
+                            {/* style={{ color: "#8b9cb5", paddingTop: 8, backgroundColor: "red" }} */}
+                        </TouchableOpacity>
 
 
                         {/* <View style={styles.container}> */}
                         {isPickerShow && (
                             <DateTimePicker
+                                date={new Date()}
                                 value={new Date()}
                                 mode={'date'}
                                 onChange={onDobChange}
@@ -449,6 +473,7 @@ const RegisterScreen = (props) => {
                                 maxDate={new Date()}
                                 minDate={"01/01/2012"}
                                 dateFormat={('DD/MM/YYYY')}
+
                             />
                         )}
                     </View>
@@ -513,8 +538,18 @@ const styles = StyleSheet.create({
         marginRight: 35,
         margin: 10,
     },
+    inputStyle: {
+        flex: 1,
+        color: 'white',
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderWidth: 1,
+        borderRadius: 30,
+        borderColor: '#dadae8',
+        fontSize: 18,
+    },
     buttonStyle: {
-        backgroundColor: '#7DE24E',
+        backgroundColor: '#3369de',
         borderWidth: 0,
         color: '#FFFFFF',
         borderColor: '#7DE24E',
@@ -529,21 +564,12 @@ const styles = StyleSheet.create({
     buttonTextStyle: {
         color: '#FFFFFF',
         paddingVertical: 10,
-        fontSize: 16,
-    },
-    inputStyle: {
-        flex: 1,
-        color: 'white',
-        paddingLeft: 15,
-        paddingRight: 15,
-        borderWidth: 1,
-        borderRadius: 30,
-        borderColor: '#dadae8',
+        fontSize: 18,
     },
     errorTextStyle: {
         color: 'red',
         textAlign: 'center',
-        fontSize: 14,
+        fontSize: 18,
     },
     successTextStyle: {
         color: 'white',
@@ -559,5 +585,33 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 10,
         width: 350,
+    },
+    // dropdown1DropdownStyle: {
+    // color: '#FFFFFF',
+    // backgroundColor: '#111111',
+    // borderBottomLeftRadius: 12,
+    // borderBottomRightRadius: 12,
+    // },
+    dropdown1BtnStyle: {
+        width: '50%',
+        height: 30,
+        backgroundColor: '#040342',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+        paddingBottom: 8,
+    },
+    dropdown1BtnTxtStyle: { color: '#8b9cb5', textAlign: 'left' },
+    dropdown1DropdownStyle: { backgroundColor: '#040342' },
+    dropdown1RowStyle: { backgroundColor: '#040342' },
+    dropdown1RowTxtStyle: { color: '#FFFFFF', textAlign: 'left' },
+    dropdown2BtnStyle: {
+        width: '50%',
+        height: 50,
+        backgroundColor: '#040342',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+        paddingBottom: 8,
     },
 });
